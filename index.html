@@ -1,345 +1,299 @@
-<html><head><base href="https://websim.ai/"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Local HTML Files Gallery</title>
+<html><head><base href="https://example.com/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestor de Enlaces Dinámicos y Locales</title>
 <style>
+    :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #f39c12;
+        --danger-color: #e74c3c;
+        --success-color: #2ecc71;
+        --background-color: #f5f7fa;
+        --text-color: #333;
+    }
+
     body {
-        font-family: Arial, sans-serif;
-        background-color: #f0f0f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
         margin: 0;
         padding: 20px;
-        box-sizing: border-box;
+        background-color: var(--background-color);
+        color: var(--text-color);
     }
+
     .container {
-        max-width: 1200px;
+        max-width: 800px;
         margin: 0 auto;
-    }
-    h1 {
-        text-align: center;
-        color: #333;
-    }
-    .gallery {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
-        padding: 20px 0;
-    }
-    .card {
-        background: white;
+        background-color: #fff;
+        padding: 30px;
         border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        transition: transform 0.3s ease;
-        cursor: pointer;
-        position: relative;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
-    .card:hover {
-        transform: translateY(-5px);
+
+    h1, h2 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 30px;
     }
-    .card-thumbnail {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
+
+    h1 {
+        font-size: 2.5em;
     }
-    .html-icon {
-        width: 100%;
-        height: 200px;
+
+    h2 {
+        font-size: 1.8em;
+        margin-top: 40px;
+    }
+
+    .link-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .link-list li {
+        margin-bottom: 15px;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-        background-color: #f0f0f0;
-        font-size: 48px;
-        color: #333;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 10px;
+        transition: all 0.3s ease;
     }
-    .card-info {
-        padding: 15px;
+
+    .link-list li:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .card-info h3 {
-        margin: 0 0 10px 0;
-        color: #333;
+
+    .link-list a {
+        flex-grow: 1;
+        padding: 10px 15px;
+        background-color: var(--primary-color);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        font-weight: bold;
     }
-    .card-info p {
-        margin: 0;
-        color: #666;
-        font-size: 14px;
+
+    .link-list a:hover {
+        background-color: #3a7bd5;
     }
-    .add-item {
-        background-color: #4CAF50;
+
+    .delete-btn {
+        background-color: var(--danger-color);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .delete-btn:hover {
+        background-color: #c0392b;
+    }
+
+    .add-link-form {
+        margin-top: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: flex-end;
+    }
+
+    .add-link-form .input-group {
+        flex: 1 1 200px;
+    }
+
+    .add-link-form label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--text-color);
+        font-weight: bold;
+    }
+
+    .add-link-form input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+    }
+
+    .add-link-form button, .save-links {
+        background-color: var(--success-color);
         color: white;
         border: none;
         padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 20px 0;
-        cursor: pointer;
         border-radius: 5px;
-    }
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.4);
-    }
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 500px;
-        border-radius: 10px;
-    }
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 1em;
         font-weight: bold;
-        cursor: pointer;
     }
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
+
+    .add-link-form button:hover, .save-links:hover {
+        background-color: #27ae60;
     }
-    form {
-        display: flex;
-        flex-direction: column;
+
+    .save-links {
+        display: block;
+        margin: 30px auto 0;
+        background-color: var(--secondary-color);
     }
-    form input, form textarea {
-        margin-bottom: 10px;
-        padding: 5px;
+
+    .save-links:hover {
+        background-color: #e67e22;
     }
-    form button {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        padding: 10px;
-        cursor: pointer;
-    }
-    #preview {
-        max-width: 100%;
-        max-height: 200px;
-        margin-bottom: 10px;
-        display: none;
-    }
-    .delete-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: #ff4136;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        font-size: 16px;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    .card:hover .delete-btn {
-        opacity: 1;
+
+    @media (max-width: 600px) {
+        .container {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2em;
+        }
+
+        .add-link-form {
+            flex-direction: column;
+        }
+
+        .add-link-form .input-group {
+            flex: 1 1 100%;
+        }
     }
 </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Local HTML Files Gallery</h1>
-        <button class="add-item" onclick="openModal()">Add New HTML File</button>
-        <div class="gallery" id="gallery">
-            <!-- Cards will be dynamically added here -->
+<div class="container">
+    <h1>Gestor de Enlaces Dinámicos y Locales</h1>
+    
+    <h2>Enlaces Web</h2>
+    <ul id="web-link-list" class="link-list">
+        <!-- Los enlaces web se generarán dinámicamente aquí -->
+    </ul>
+    
+    <form id="add-web-link-form" class="add-link-form">
+        <div class="input-group">
+            <label for="web-link-name">Nombre del enlace web</label>
+            <input type="text" id="web-link-name" placeholder="Ej: Mi sitio web favorito" required>
         </div>
-    </div>
-
-    <div id="addItemModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Add New HTML File</h2>
-            <form id="addItemForm">
-                <input type="text" id="itemTitle" placeholder="Title" required>
-                <input type="file" id="fileInput" accept=".html" required>
-                <input type="file" id="thumbnailInput" accept="image/*">
-                <textarea id="itemDescription" placeholder="Description" required></textarea>
-                <img id="preview" alt="Thumbnail Preview">
-                <button type="submit">Add HTML File</button>
-            </form>
+        <div class="input-group">
+            <label for="web-link-url">URL del enlace web</label>
+            <input type="url" id="web-link-url" placeholder="https://ejemplo.com" required>
         </div>
-    </div>
+        <button type="submit">Añadir Enlace Web</button>
+    </form>
+    
+    <h2>Enlaces Locales</h2>
+    <ul id="local-link-list" class="link-list">
+        <!-- Los enlaces locales se generarán dinámicamente aquí -->
+    </ul>
+    
+    <form id="add-local-link-form" class="add-link-form">
+        <div class="input-group">
+            <label for="local-link-name">Nombre del enlace local</label>
+            <input type="text" id="local-link-name" placeholder="Ej: Documento importante" required>
+        </div>
+        <div class="input-group">
+            <label for="local-link-file">Archivo local</label>
+            <input type="file" id="local-link-file" required>
+        </div>
+        <button type="submit">Añadir Enlace Local</button>
+    </form>
+    
+    <button id="save-links" class="save-links">Guardar Todos los Enlaces</button>
+</div>
 
 <script>
-    let items = [];
+document.addEventListener('DOMContentLoaded', function() {
+    const webLinkList = document.getElementById('web-link-list');
+    const localLinkList = document.getElementById('local-link-list');
+    const addWebLinkForm = document.getElementById('add-web-link-form');
+    const addLocalLinkForm = document.getElementById('add-local-link-form');
+    const saveLinksBtn = document.getElementById('save-links');
 
-    function loadItems() {
-        const savedItems = localStorage.getItem('htmlGalleryItems');
-        if (savedItems) {
-            items = JSON.parse(savedItems);
-            renderGallery();
-        }
-    }
+    // Cargar enlaces guardados
+    let webLinks = JSON.parse(localStorage.getItem('webLinks')) || [
+        { name: 'Ejemplo Web 1', url: '/pagina1' },
+        { name: 'Ejemplo Web 2', url: '/pagina2' }
+    ];
+    let localLinks = JSON.parse(localStorage.getItem('localLinks')) || [];
 
-    function saveItems() {
-        localStorage.setItem('htmlGalleryItems', JSON.stringify(items));
-    }
+    function renderLinks() {
+        webLinkList.innerHTML = '';
+        localLinkList.innerHTML = '';
 
-    function renderGallery() {
-        const gallery = document.getElementById('gallery');
-        gallery.innerHTML = '';
-        items.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            if (item.thumbnail) {
-                card.innerHTML = `
-                    <img class="card-thumbnail" src="${item.thumbnail}" alt="${item.title}">
-                    <div class="card-info">
-                        <h3>${item.title}</h3>
-                        <p>${item.description}</p>
-                    </div>
-                    <button class="delete-btn" onclick="deleteItem(event, ${index})">×</button>
-                `;
-            } else {
-                card.innerHTML = `
-                    <div class="html-icon">HTML</div>
-                    <div class="card-info">
-                        <h3>${item.title}</h3>
-                        <p>${item.description}</p>
-                    </div>
-                    <button class="delete-btn" onclick="deleteItem(event, ${index})">×</button>
-                `;
-            }
-            card.addEventListener('click', () => openItem(index));
-            gallery.appendChild(card);
+        webLinks.forEach((link, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <a href="${link.url}" target="_blank">${link.name}</a>
+                <button class="delete-btn" data-type="web" data-index="${index}">Eliminar</button>
+            `;
+            webLinkList.appendChild(li);
+        });
+
+        localLinks.forEach((link, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <a href="${link.url}" target="_blank">${link.name}</a>
+                <button class="delete-btn" data-type="local" data-index="${index}">Eliminar</button>
+            `;
+            localLinkList.appendChild(li);
+        });
+
+        // Añadir event listeners a los nuevos botones de eliminar
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const type = this.getAttribute('data-type');
+                const index = this.getAttribute('data-index');
+                if (type === 'web') {
+                    webLinks.splice(index, 1);
+                } else {
+                    localLinks.splice(index, 1);
+                }
+                renderLinks();
+            });
         });
     }
 
-    function deleteItem(event, index) {
-        event.stopPropagation();  // Prevent opening the file when clicking delete
-        if (confirm('Are you sure you want to delete this HTML file?')) {
-            items.splice(index, 1);
-            saveItems();
-            renderGallery();
-        }
-    }
+    // Renderizar enlaces iniciales
+    renderLinks();
 
-    function openItem(index) {
-        const item = items[index];
-        openHTMLFile(item.path);
-    }
-
-    function openHTMLFile(path) {
-        const iframe = document.createElement('iframe');
-        iframe.src = path;
-        iframe.style.position = 'fixed';
-        iframe.style.top = '0';
-        iframe.style.left = '0';
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.style.border = 'none';
-        iframe.style.zIndex = '9999';
-
-        const closeButton = document.createElement('button');
-        closeButton.textContent = 'Close';
-        closeButton.style.position = 'fixed';
-        closeButton.style.top = '10px';
-        closeButton.style.right = '10px';
-        closeButton.style.zIndex = '10000';
-        closeButton.onclick = () => {
-            document.body.removeChild(iframe);
-            document.body.removeChild(closeButton);
-        };
-
-        document.body.appendChild(iframe);
-        document.body.appendChild(closeButton);
-    }
-
-    function openModal() {
-        document.getElementById('addItemModal').style.display = 'block';
-    }
-
-    function closeModal() {
-        document.getElementById('addItemModal').style.display = 'none';
-        document.getElementById('addItemForm').reset();
-        document.getElementById('preview').style.display = 'none';
-    }
-
-    document.getElementById('thumbnailInput').addEventListener('change', function(e) {
-        const preview = document.getElementById('preview');
-        const file = e.target.files[0];
-
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            }
-            reader.readAsDataURL(file);
-        } else {
-            preview.style.display = 'none';
-        }
-    });
-
-    document.getElementById('addItemForm').addEventListener('submit', function(e) {
+    // Añadir nuevo enlace web
+    addWebLinkForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const title = document.getElementById('itemTitle').value;
-        const description = document.getElementById('itemDescription').value;
-        const file = document.getElementById('fileInput').files[0];
-        const thumbnailFile = document.getElementById('thumbnailInput').files[0];
-
-        if (!file) {
-            alert('Please select an HTML file.');
-            return;
-        }
-
-        const fileReader = new FileReader();
-        fileReader.onload = function(e) {
-            const fileContent = e.target.result;
-            
-            if (thumbnailFile) {
-                const thumbnailReader = new FileReader();
-                thumbnailReader.onload = function(e) {
-                    items.push({ 
-                        title, 
-                        path: fileContent, 
-                        description,
-                        thumbnail: e.target.result
-                    });
-                    saveItems();
-                    renderGallery();
-                    closeModal();
-                }
-                thumbnailReader.readAsDataURL(thumbnailFile);
-            } else {
-                items.push({ 
-                    title, 
-                    path: fileContent, 
-                    description 
-                });
-                saveItems();
-                renderGallery();
-                closeModal();
-            }
-        }
-        fileReader.readAsDataURL(file);
-
-        this.reset();
+        const name = document.getElementById('web-link-name').value;
+        const url = document.getElementById('web-link-url').value;
+        webLinks.push({ name, url });
+        renderLinks();
+        addWebLinkForm.reset();
     });
 
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('addItemModal')) {
-            closeModal();
+    // Añadir nuevo enlace local
+    addLocalLinkForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('local-link-name').value;
+        const file = document.getElementById('local-link-file').files[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            localLinks.push({ name, url });
+            renderLinks();
+            addLocalLinkForm.reset();
         }
-    }
+    });
 
-    loadItems();
-    renderGallery();
+    // Guardar enlaces
+    saveLinksBtn.addEventListener('click', function() {
+        localStorage.setItem('webLinks', JSON.stringify(webLinks));
+        localStorage.setItem('localLinks', JSON.stringify(localLinks));
+        alert('Todos los enlaces guardados correctamente');
+    });
+});
 </script>
-
 </body>
 </html>
