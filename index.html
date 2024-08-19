@@ -1,7 +1,7 @@
-<html><head><base href="https://www.ejemplo.com/gestor-enlaces-moderno">
+<html><head><base href="https://www.ejemplo.com/gestor-enlaces-organizado">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestor de Enlaces Moderno</title>
+<title>Gestor de Enlaces Organizado</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <style>
@@ -24,7 +24,7 @@
     }
 
     .container {
-        max-width: 1000px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 2rem;
     }
@@ -32,16 +32,18 @@
     h1, h2 {
         color: var(--primary-color);
         margin-bottom: 1.5rem;
+        text-align: center;
     }
 
     .input-group {
         display: flex;
+        flex-wrap: wrap;
         margin-bottom: 1rem;
         gap: 1rem;
     }
 
-    input {
-        flex-grow: 1;
+    input, select, button {
+        flex: 1;
         padding: 0.75rem;
         font-size: 1rem;
         border: none;
@@ -51,10 +53,6 @@
     }
 
     button {
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        border: none;
-        border-radius: 5px;
         background-color: var(--secondary-color);
         color: white;
         cursor: pointer;
@@ -68,7 +66,7 @@
 
     .enlaces-container {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 1.5rem;
         margin-top: 2rem;
     }
@@ -79,6 +77,7 @@
         padding: 1.5rem;
         box-shadow: 0 4px 6px var(--shadow-color);
         transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
     }
 
     .enlace-card:hover {
@@ -93,12 +92,14 @@
         font-size: 1.1rem;
         display: block;
         margin-bottom: 0.5rem;
+        word-break: break-word;
     }
 
     .enlace-card p {
         margin: 0;
         color: var(--text-color);
         font-size: 0.9rem;
+        word-break: break-word;
     }
 
     .eliminar-btn {
@@ -113,7 +114,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        float: right;
+        position: absolute;
+        top: 10px;
+        right: 10px;
         transition: background-color 0.3s;
     }
 
@@ -121,87 +124,118 @@
         background-color: #c0392b;
     }
 
+    .categoria-titulo {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+
+    .filtro-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    #busquedaInput {
+        flex: 1;
+        margin-right: 1rem;
+    }
+
     @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+
         .input-group {
             flex-direction: column;
         }
-        
+
+        input, select, button {
+            width: 100%;
+        }
+
         .enlaces-container {
             grid-template-columns: 1fr;
+        }
+
+        .filtro-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        #busquedaInput {
+            margin-right: 0;
+            margin-bottom: 1rem;
         }
     }
 </style>
 </head>
 <body>
     <div class="container">
-        <h1>Gestor de Enlaces Moderno</h1>
+        <h1>Gestor de Enlaces Organizado</h1>
         
-        <h2>Enlaces Web</h2>
         <div class="input-group">
-            <input type="text" id="enlaceInput" placeholder="Ingrese un enlace web">
+            <input type="text" id="enlaceInput" placeholder="Ingrese un enlace">
             <input type="text" id="descripcionInput" placeholder="Descripción del enlace">
+            <select id="categoriaSelect">
+                <option value="">Seleccione una categoría</option>
+                <option value="web">Enlaces Web</option>
+                <option value="local">Enlaces Locales</option>
+                <option value="documentacion">Documentación</option>
+                <option value="recursos">Recursos</option>
+                <option value="otros">Otros</option>
+            </select>
             <button onclick="agregarEnlace()">Agregar Enlace</button>
         </div>
-        <div id="enlacesList" class="enlaces-container"></div>
-        
-        <h2>Enlaces Locales</h2>
-        <div class="input-group">
-            <input type="text" id="localLinkInput" placeholder="Ingrese un enlace local (ej: /pagina.html)">
-            <input type="text" id="localDescripcionInput" placeholder="Descripción del enlace local">
-            <button onclick="agregarEnlaceLocal()">Agregar Enlace Local</button>
+
+        <div class="filtro-container">
+            <input type="text" id="busquedaInput" placeholder="Buscar enlaces" oninput="filtrarEnlaces()">
+            <select id="filtroCategoria" onchange="filtrarEnlaces()">
+                <option value="">Todas las categorías</option>
+                <option value="web">Enlaces Web</option>
+                <option value="local">Enlaces Locales</option>
+                <option value="documentacion">Documentación</option>
+                <option value="recursos">Recursos</option>
+                <option value="otros">Otros</option>
+            </select>
         </div>
-        <div id="localLinksList" class="enlaces-container"></div>
+
+        <div id="enlacesList"></div>
     </div>
 
     <script>
         let enlaces = [];
-        let localLinks = [];
 
         window.onload = function() {
             cargarEnlacesGuardados();
             actualizarListaEnlaces();
-            actualizarListaEnlacesLocales();
         };
 
         function cargarEnlacesGuardados() {
             const enlacesGuardados = localStorage.getItem('enlaces');
-            const localLinksGuardados = localStorage.getItem('localLinks');
-            
             if (enlacesGuardados) {
                 enlaces = JSON.parse(enlacesGuardados);
-            }
-            
-            if (localLinksGuardados) {
-                localLinks = JSON.parse(localLinksGuardados);
             }
         }
 
         function guardarEnlaces() {
             localStorage.setItem('enlaces', JSON.stringify(enlaces));
-            localStorage.setItem('localLinks', JSON.stringify(localLinks));
         }
 
         function agregarEnlace() {
             const enlace = document.getElementById('enlaceInput').value;
             const descripcion = document.getElementById('descripcionInput').value;
-            if (enlace && descripcion) {
-                enlaces.push({ url: enlace, descripcion: descripcion });
+            const categoria = document.getElementById('categoriaSelect').value;
+            if (enlace && descripcion && categoria) {
+                enlaces.push({ url: enlace, descripcion: descripcion, categoria: categoria });
                 actualizarListaEnlaces();
                 guardarEnlaces();
                 document.getElementById('enlaceInput').value = '';
                 document.getElementById('descripcionInput').value = '';
-            }
-        }
-
-        function agregarEnlaceLocal() {
-            const enlaceLocal = document.getElementById('localLinkInput').value;
-            const descripcionLocal = document.getElementById('localDescripcionInput').value;
-            if (enlaceLocal && descripcionLocal) {
-                localLinks.push({ url: enlaceLocal, descripcion: descripcionLocal });
-                actualizarListaEnlacesLocales();
-                guardarEnlaces();
-                document.getElementById('localLinkInput').value = '';
-                document.getElementById('localDescripcionInput').value = '';
+                document.getElementById('categoriaSelect').value = '';
             }
         }
 
@@ -211,39 +245,80 @@
             guardarEnlaces();
         }
 
-        function eliminarEnlaceLocal(index) {
-            localLinks.splice(index, 1);
-            actualizarListaEnlacesLocales();
-            guardarEnlaces();
-        }
-
         function actualizarListaEnlaces() {
             const listaEnlaces = document.getElementById('enlacesList');
             listaEnlaces.innerHTML = '';
-            enlaces.forEach((enlace, index) => {
-                const enlaceElement = document.createElement('div');
-                enlaceElement.className = 'enlace-card';
-                enlaceElement.innerHTML = `
-                    <button class="eliminar-btn" onclick="eliminarEnlace(${index})"><i class="fas fa-trash"></i></button>
-                    <a href="${enlace.url}" target="_blank">${enlace.descripcion}</a>
-                    <p>${enlace.url}</p>
-                `;
-                listaEnlaces.appendChild(enlaceElement);
+
+            const categorias = [...new Set(enlaces.map(enlace => enlace.categoria))];
+            
+            categorias.forEach(categoria => {
+                const enlacesPorCategoria = enlaces.filter(enlace => enlace.categoria === categoria);
+                
+                if (enlacesPorCategoria.length > 0) {
+                    const categoriaTitulo = document.createElement('h2');
+                    categoriaTitulo.className = 'categoria-titulo';
+                    categoriaTitulo.textContent = categoria.charAt(0).toUpperCase() + categoria.slice(1);
+                    listaEnlaces.appendChild(categoriaTitulo);
+
+                    const enlacesContainer = document.createElement('div');
+                    enlacesContainer.className = 'enlaces-container';
+
+                    enlacesPorCategoria.forEach((enlace, index) => {
+                        const enlaceElement = document.createElement('div');
+                        enlaceElement.className = 'enlace-card';
+                        enlaceElement.innerHTML = `
+                            <button class="eliminar-btn" onclick="eliminarEnlace(${enlaces.indexOf(enlace)})"><i class="fas fa-trash"></i></button>
+                            <a href="${enlace.url}" target="_blank">${enlace.descripcion}</a>
+                            <p>${enlace.url}</p>
+                        `;
+                        enlacesContainer.appendChild(enlaceElement);
+                    });
+
+                    listaEnlaces.appendChild(enlacesContainer);
+                }
             });
         }
 
-        function actualizarListaEnlacesLocales() {
-            const listaEnlacesLocales = document.getElementById('localLinksList');
-            listaEnlacesLocales.innerHTML = '';
-            localLinks.forEach((enlace, index) => {
-                const enlaceElement = document.createElement('div');
-                enlaceElement.className = 'enlace-card';
-                enlaceElement.innerHTML = `
-                    <button class="eliminar-btn" onclick="eliminarEnlaceLocal(${index})"><i class="fas fa-trash"></i></button>
-                    <a href="${enlace.url}">${enlace.descripcion}</a>
-                    <p>${enlace.url}</p>
-                `;
-                listaEnlacesLocales.appendChild(enlaceElement);
+        function filtrarEnlaces() {
+            const busqueda = document.getElementById('busquedaInput').value.toLowerCase();
+            const categoriaFiltro = document.getElementById('filtroCategoria').value;
+
+            const enlacesFiltrados = enlaces.filter(enlace => {
+                const coincideBusqueda = enlace.descripcion.toLowerCase().includes(busqueda) || enlace.url.toLowerCase().includes(busqueda);
+                const coincideCategoria = categoriaFiltro === '' || enlace.categoria === categoriaFiltro;
+                return coincideBusqueda && coincideCategoria;
+            });
+
+            const listaEnlaces = document.getElementById('enlacesList');
+            listaEnlaces.innerHTML = '';
+
+            const categorias = [...new Set(enlacesFiltrados.map(enlace => enlace.categoria))];
+            
+            categorias.forEach(categoria => {
+                const enlacesPorCategoria = enlacesFiltrados.filter(enlace => enlace.categoria === categoria);
+                
+                if (enlacesPorCategoria.length > 0) {
+                    const categoriaTitulo = document.createElement('h2');
+                    categoriaTitulo.className = 'categoria-titulo';
+                    categoriaTitulo.textContent = categoria.charAt(0).toUpperCase() + categoria.slice(1);
+                    listaEnlaces.appendChild(categoriaTitulo);
+
+                    const enlacesContainer = document.createElement('div');
+                    enlacesContainer.className = 'enlaces-container';
+
+                    enlacesPorCategoria.forEach((enlace, index) => {
+                        const enlaceElement = document.createElement('div');
+                        enlaceElement.className = 'enlace-card';
+                        enlaceElement.innerHTML = `
+                            <button class="eliminar-btn" onclick="eliminarEnlace(${enlaces.indexOf(enlace)})"><i class="fas fa-trash"></i></button>
+                            <a href="${enlace.url}" target="_blank">${enlace.descripcion}</a>
+                            <p>${enlace.url}</p>
+                        `;
+                        enlacesContainer.appendChild(enlaceElement);
+                    });
+
+                    listaEnlaces.appendChild(enlacesContainer);
+                }
             });
         }
     </script>
