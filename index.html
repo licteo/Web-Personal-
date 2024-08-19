@@ -1,299 +1,250 @@
-<html><head><base href="https://example.com/">
+<html><head><base href="https://www.ejemplo.com/gestor-enlaces-moderno">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestor de Enlaces Dinámicos y Locales</title>
+<title>Gestor de Enlaces Moderno</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <style>
     :root {
-        --primary-color: #4a90e2;
-        --secondary-color: #f39c12;
-        --danger-color: #e74c3c;
-        --success-color: #2ecc71;
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
         --background-color: #f5f7fa;
-        --text-color: #333;
+        --text-color: #34495e;
+        --card-background: #ffffff;
+        --shadow-color: rgba(0, 0, 0, 0.1);
     }
 
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Roboto', sans-serif;
         line-height: 1.6;
         margin: 0;
-        padding: 20px;
+        padding: 0;
         background-color: var(--background-color);
         color: var(--text-color);
     }
 
     .container {
-        max-width: 800px;
+        max-width: 1000px;
         margin: 0 auto;
-        background-color: #fff;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 2rem;
     }
 
     h1, h2 {
         color: var(--primary-color);
-        text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 1.5rem;
     }
 
-    h1 {
-        font-size: 2.5em;
-    }
-
-    h2 {
-        font-size: 1.8em;
-        margin-top: 40px;
-    }
-
-    .link-list {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .link-list li {
-        margin-bottom: 15px;
+    .input-group {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: #f8f9fa;
-        border-radius: 5px;
-        padding: 10px;
-        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+        gap: 1rem;
     }
 
-    .link-list li:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .link-list a {
+    input {
         flex-grow: 1;
-        padding: 10px 15px;
-        background-color: var(--primary-color);
-        color: #fff;
-        text-decoration: none;
+        padding: 0.75rem;
+        font-size: 1rem;
+        border: none;
         border-radius: 5px;
-        transition: background-color 0.3s ease;
+        background-color: var(--card-background);
+        box-shadow: 0 2px 5px var(--shadow-color);
+    }
+
+    button {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        background-color: var(--secondary-color);
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.1s;
+    }
+
+    button:hover {
+        background-color: #27ae60;
+        transform: translateY(-2px);
+    }
+
+    .enlaces-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .enlace-card {
+        background-color: var(--card-background);
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px var(--shadow-color);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .enlace-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px var(--shadow-color);
+    }
+
+    .enlace-card a {
+        color: var(--primary-color);
+        text-decoration: none;
         font-weight: bold;
+        font-size: 1.1rem;
+        display: block;
+        margin-bottom: 0.5rem;
     }
 
-    .link-list a:hover {
-        background-color: #3a7bd5;
+    .enlace-card p {
+        margin: 0;
+        color: var(--text-color);
+        font-size: 0.9rem;
     }
 
-    .delete-btn {
-        background-color: var(--danger-color);
+    .eliminar-btn {
+        background-color: #e74c3c;
         color: white;
         border: none;
-        padding: 8px 12px;
-        border-radius: 5px;
+        padding: 0.5rem;
         cursor: pointer;
-        margin-left: 10px;
-        transition: background-color 0.3s ease;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        float: right;
+        transition: background-color 0.3s;
     }
 
-    .delete-btn:hover {
+    .eliminar-btn:hover {
         background-color: #c0392b;
     }
 
-    .add-link-form {
-        margin-top: 30px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        align-items: flex-end;
-    }
-
-    .add-link-form .input-group {
-        flex: 1 1 200px;
-    }
-
-    .add-link-form label {
-        display: block;
-        margin-bottom: 5px;
-        color: var(--text-color);
-        font-weight: bold;
-    }
-
-    .add-link-form input {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 1em;
-    }
-
-    .add-link-form button, .save-links {
-        background-color: var(--success-color);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        font-size: 1em;
-        font-weight: bold;
-    }
-
-    .add-link-form button:hover, .save-links:hover {
-        background-color: #27ae60;
-    }
-
-    .save-links {
-        display: block;
-        margin: 30px auto 0;
-        background-color: var(--secondary-color);
-    }
-
-    .save-links:hover {
-        background-color: #e67e22;
-    }
-
-    @media (max-width: 600px) {
-        .container {
-            padding: 20px;
-        }
-
-        h1 {
-            font-size: 2em;
-        }
-
-        .add-link-form {
+    @media (max-width: 768px) {
+        .input-group {
             flex-direction: column;
         }
-
-        .add-link-form .input-group {
-            flex: 1 1 100%;
+        
+        .enlaces-container {
+            grid-template-columns: 1fr;
         }
     }
 </style>
 </head>
 <body>
-<div class="container">
-    <h1>Gestor de Enlaces Dinámicos y Locales</h1>
-    
-    <h2>Enlaces Web</h2>
-    <ul id="web-link-list" class="link-list">
-        <!-- Los enlaces web se generarán dinámicamente aquí -->
-    </ul>
-    
-    <form id="add-web-link-form" class="add-link-form">
+    <div class="container">
+        <h1>Gestor de Enlaces Moderno</h1>
+        
+        <h2>Enlaces Web</h2>
         <div class="input-group">
-            <label for="web-link-name">Nombre del enlace web</label>
-            <input type="text" id="web-link-name" placeholder="Ej: Mi sitio web favorito" required>
+            <input type="text" id="enlaceInput" placeholder="Ingrese un enlace web">
+            <input type="text" id="descripcionInput" placeholder="Descripción del enlace">
+            <button onclick="agregarEnlace()">Agregar Enlace</button>
         </div>
+        <div id="enlacesList" class="enlaces-container"></div>
+        
+        <h2>Enlaces Locales</h2>
         <div class="input-group">
-            <label for="web-link-url">URL del enlace web</label>
-            <input type="url" id="web-link-url" placeholder="https://ejemplo.com" required>
+            <input type="text" id="localLinkInput" placeholder="Ingrese un enlace local (ej: /pagina.html)">
+            <input type="text" id="localDescripcionInput" placeholder="Descripción del enlace local">
+            <button onclick="agregarEnlaceLocal()">Agregar Enlace Local</button>
         </div>
-        <button type="submit">Añadir Enlace Web</button>
-    </form>
-    
-    <h2>Enlaces Locales</h2>
-    <ul id="local-link-list" class="link-list">
-        <!-- Los enlaces locales se generarán dinámicamente aquí -->
-    </ul>
-    
-    <form id="add-local-link-form" class="add-link-form">
-        <div class="input-group">
-            <label for="local-link-name">Nombre del enlace local</label>
-            <input type="text" id="local-link-name" placeholder="Ej: Documento importante" required>
-        </div>
-        <div class="input-group">
-            <label for="local-link-file">Archivo local</label>
-            <input type="file" id="local-link-file" required>
-        </div>
-        <button type="submit">Añadir Enlace Local</button>
-    </form>
-    
-    <button id="save-links" class="save-links">Guardar Todos los Enlaces</button>
-</div>
+        <div id="localLinksList" class="enlaces-container"></div>
+    </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const webLinkList = document.getElementById('web-link-list');
-    const localLinkList = document.getElementById('local-link-list');
-    const addWebLinkForm = document.getElementById('add-web-link-form');
-    const addLocalLinkForm = document.getElementById('add-local-link-form');
-    const saveLinksBtn = document.getElementById('save-links');
+    <script>
+        let enlaces = [];
+        let localLinks = [];
 
-    // Cargar enlaces guardados
-    let webLinks = JSON.parse(localStorage.getItem('webLinks')) || [
-        { name: 'Ejemplo Web 1', url: '/pagina1' },
-        { name: 'Ejemplo Web 2', url: '/pagina2' }
-    ];
-    let localLinks = JSON.parse(localStorage.getItem('localLinks')) || [];
+        window.onload = function() {
+            cargarEnlacesGuardados();
+            actualizarListaEnlaces();
+            actualizarListaEnlacesLocales();
+        };
 
-    function renderLinks() {
-        webLinkList.innerHTML = '';
-        localLinkList.innerHTML = '';
-
-        webLinks.forEach((link, index) => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <a href="${link.url}" target="_blank">${link.name}</a>
-                <button class="delete-btn" data-type="web" data-index="${index}">Eliminar</button>
-            `;
-            webLinkList.appendChild(li);
-        });
-
-        localLinks.forEach((link, index) => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <a href="${link.url}" target="_blank">${link.name}</a>
-                <button class="delete-btn" data-type="local" data-index="${index}">Eliminar</button>
-            `;
-            localLinkList.appendChild(li);
-        });
-
-        // Añadir event listeners a los nuevos botones de eliminar
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const type = this.getAttribute('data-type');
-                const index = this.getAttribute('data-index');
-                if (type === 'web') {
-                    webLinks.splice(index, 1);
-                } else {
-                    localLinks.splice(index, 1);
-                }
-                renderLinks();
-            });
-        });
-    }
-
-    // Renderizar enlaces iniciales
-    renderLinks();
-
-    // Añadir nuevo enlace web
-    addWebLinkForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const name = document.getElementById('web-link-name').value;
-        const url = document.getElementById('web-link-url').value;
-        webLinks.push({ name, url });
-        renderLinks();
-        addWebLinkForm.reset();
-    });
-
-    // Añadir nuevo enlace local
-    addLocalLinkForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const name = document.getElementById('local-link-name').value;
-        const file = document.getElementById('local-link-file').files[0];
-        if (file) {
-            const url = URL.createObjectURL(file);
-            localLinks.push({ name, url });
-            renderLinks();
-            addLocalLinkForm.reset();
+        function cargarEnlacesGuardados() {
+            const enlacesGuardados = localStorage.getItem('enlaces');
+            const localLinksGuardados = localStorage.getItem('localLinks');
+            
+            if (enlacesGuardados) {
+                enlaces = JSON.parse(enlacesGuardados);
+            }
+            
+            if (localLinksGuardados) {
+                localLinks = JSON.parse(localLinksGuardados);
+            }
         }
-    });
 
-    // Guardar enlaces
-    saveLinksBtn.addEventListener('click', function() {
-        localStorage.setItem('webLinks', JSON.stringify(webLinks));
-        localStorage.setItem('localLinks', JSON.stringify(localLinks));
-        alert('Todos los enlaces guardados correctamente');
-    });
-});
-</script>
-</body>
-</html>
+        function guardarEnlaces() {
+            localStorage.setItem('enlaces', JSON.stringify(enlaces));
+            localStorage.setItem('localLinks', JSON.stringify(localLinks));
+        }
+
+        function agregarEnlace() {
+            const enlace = document.getElementById('enlaceInput').value;
+            const descripcion = document.getElementById('descripcionInput').value;
+            if (enlace && descripcion) {
+                enlaces.push({ url: enlace, descripcion: descripcion });
+                actualizarListaEnlaces();
+                guardarEnlaces();
+                document.getElementById('enlaceInput').value = '';
+                document.getElementById('descripcionInput').value = '';
+            }
+        }
+
+        function agregarEnlaceLocal() {
+            const enlaceLocal = document.getElementById('localLinkInput').value;
+            const descripcionLocal = document.getElementById('localDescripcionInput').value;
+            if (enlaceLocal && descripcionLocal) {
+                localLinks.push({ url: enlaceLocal, descripcion: descripcionLocal });
+                actualizarListaEnlacesLocales();
+                guardarEnlaces();
+                document.getElementById('localLinkInput').value = '';
+                document.getElementById('localDescripcionInput').value = '';
+            }
+        }
+
+        function eliminarEnlace(index) {
+            enlaces.splice(index, 1);
+            actualizarListaEnlaces();
+            guardarEnlaces();
+        }
+
+        function eliminarEnlaceLocal(index) {
+            localLinks.splice(index, 1);
+            actualizarListaEnlacesLocales();
+            guardarEnlaces();
+        }
+
+        function actualizarListaEnlaces() {
+            const listaEnlaces = document.getElementById('enlacesList');
+            listaEnlaces.innerHTML = '';
+            enlaces.forEach((enlace, index) => {
+                const enlaceElement = document.createElement('div');
+                enlaceElement.className = 'enlace-card';
+                enlaceElement.innerHTML = `
+                    <button class="eliminar-btn" onclick="eliminarEnlace(${index})"><i class="fas fa-trash"></i></button>
+                    <a href="${enlace.url}" target="_blank">${enlace.descripcion}</a>
+                    <p>${enlace.url}</p>
+                `;
+                listaEnlaces.appendChild(enlaceElement);
+            });
+        }
+
+        function actualizarListaEnlacesLocales() {
+            const listaEnlacesLocales = document.getElementById('localLinksList');
+            listaEnlacesLocales.innerHTML = '';
+            localLinks.forEach((enlace, index) => {
+                const enlaceElement = document.createElement('div');
+                enlaceElement.className = 'enlace-card';
+                enlaceElement.innerHTML = `
+                    <button class="eliminar-btn" onclick="eliminarEnlaceLocal(${index})"><i class="fas fa-trash"></i></button>
+                    <a href="${enlace.url}">${enlace.descripcion}</a>
+                    <p>${enlace.url}</p>
+                `;
+                listaEnlacesLocales.appendChild(enlaceElement);
+            });
+        }
+    </script>
+</body></html>
