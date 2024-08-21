@@ -1,7 +1,7 @@
-<html><head><base href="https://www.ejemplo.com/gestor-enlaces-web-y-archivos-html">
+<html><head><base href="https://www.ejemplo.com/gestor-enlaces-persistente-mejorado">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestor de Enlaces Web y Archivos HTML</title>
+<title>Gestor de Enlaces Web y Locales Persistente</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -21,7 +21,7 @@
     h1, h2 {
         color: #333;
     }
-    input[type="text"], input[type="url"] {
+    input[type="text"], input[type="url"], input[type="file"] {
         width: 100%;
         padding: 8px;
         margin-bottom: 10px;
@@ -41,26 +41,26 @@
     button:hover {
         background-color: #45a049;
     }
-    #linksList, #htmlFilesList {
+    #linksList {
         margin-top: 20px;
     }
-    .link-item, .file-item {
+    .link-item {
         background-color: #f9f9f9;
         border: 1px solid #ddd;
         padding: 10px;
         margin-bottom: 10px;
         border-radius: 4px;
     }
-    .link-item a, .file-item a {
+    .link-item a {
         color: #1a0dab;
         text-decoration: none;
     }
-    .link-item a:hover, .file-item a:hover {
+    .link-item a:hover {
         text-decoration: underline;
     }
     .remove-btn {
         background-color: #f44336;
-        float: right;
+        margin-left: 10px;
     }
     .remove-btn:hover {
         background-color: #d32f2f;
@@ -69,7 +69,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Gestor de Enlaces Web y Archivos HTML</h1>
+        <h1>Gestor de Enlaces Web y Locales Persistente</h1>
         
         <h2>Agregar Enlace Web</h2>
         <input type="url" id="webLink" placeholder="https://ejemplo.com">
@@ -81,21 +81,24 @@
         <button onclick="addHtmlFile()">Agregar Archivo HTML</button>
         
         <div id="linksList"></div>
-        <div id="htmlFilesList"></div>
+        
+        <button onclick="saveLinks()">Guardar Enlaces</button>
+        <button onclick="loadLinks()">Cargar Enlaces</button>
+        <button onclick="clearLinks()">Limpiar Enlaces</button>
     </div>
 
     <script>
         let links = [];
-        let htmlFiles = [];
 
         function addWebLink() {
             const url = document.getElementById('webLink').value;
             const description = document.getElementById('linkDescription').value;
             if (url && isValidURL(url)) {
-                links.push({ url, description });
+                links.push({ type: 'web', url, description });
                 updateLinksList();
                 document.getElementById('webLink').value = '';
                 document.getElementById('linkDescription').value = '';
+                saveLinks();
             } else {
                 alert('Por favor, ingrese una URL válida.');
             }
@@ -105,8 +108,13 @@
             const fileInput = document.getElementById('htmlFile');
             const file = fileInput.files[0];
             if (file && file.name.endsWith('.html')) {
-                htmlFiles.push(file);
-                updateHtmlFilesList();
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    links.push({ type: 'local', name: file.name, content: e.target.result });
+                    updateLinksList();
+                    saveLinks();
+                };
+                reader.readAsText(file);
                 fileInput.value = '';
             } else {
                 alert('Por favor, seleccione un archivo HTML válido.');
@@ -115,51 +123,38 @@
 
         function updateLinksList() {
             const linksList = document.getElementById('linksList');
-            linksList.innerHTML = '<h2>Enlaces Web</h2>';
+            linksList.innerHTML = '<h2>Enlaces Guardados</h2>';
             links.forEach((link, index) => {
                 const linkItem = document.createElement('div');
                 linkItem.className = 'link-item';
-                linkItem.innerHTML = `
-                    <a href="${link.url}" target="_blank">${link.description || link.url}</a>
-                    <button class="remove-btn" onclick="removeLink(${index})">Eliminar</button>
-                `;
+                if (link.type === 'web') {
+                    linkItem.innerHTML = `
+                        <a href="${link.url}" target="_blank">${link.description || link.url}</a>
+                        <button class="remove-btn" onclick="removeLink(${index})">Eliminar</button>
+                    `;
+                } else {
+                    linkItem.innerHTML = `
+                        <a href="#" onclick="openLocalHtml(${index}); return false;">${link.name}</a>
+                        <button class="remove-btn" onclick="removeLink(${index})">Eliminar</button>
+                    `;
+                }
                 linksList.appendChild(linkItem);
-            });
-        }
-
-        function updateHtmlFilesList() {
-            const filesList = document.getElementById('htmlFilesList');
-            filesList.innerHTML = '<h2>Archivos HTML Locales</h2>';
-            htmlFiles.forEach((file, index) => {
-                const fileItem = document.createElement('div');
-                fileItem.className = 'file-item';
-                fileItem.innerHTML = `
-                    <a href="#" onclick="openHtmlFile(${index})">${file.name}</a>
-                    <button class="remove-btn" onclick="removeHtmlFile(${index})">Eliminar</button>
-                `;
-                filesList.appendChild(fileItem);
             });
         }
 
         function removeLink(index) {
             links.splice(index, 1);
             updateLinksList();
+            saveLinks();
         }
 
-        function removeHtmlFile(index) {
-            htmlFiles.splice(index, 1);
-            updateHtmlFilesList();
-        }
-
-        function openHtmlFile(index) {
-            const file = htmlFiles[index];
-            const reader = new FileReader();
-            reader.onload = function(e) {
+        function openLocalHtml(index) {
+            const link = links[index];
+            if (link.type === 'local') {
                 const win = window.open('', '_blank');
-                win.document.write(e.target.result);
+                win.document.write(link.content);
                 win.document.close();
-            };
-            reader.readAsText(file);
+            }
         }
 
         function isValidURL(string) {
@@ -170,5 +165,31 @@
                 return false;
             }
         }
+
+        function saveLinks() {
+            localStorage.setItem('savedLinks', JSON.stringify(links));
+            alert('Enlaces guardados correctamente.');
+        }
+
+        function loadLinks() {
+            const savedLinks = localStorage.getItem('savedLinks');
+            if (savedLinks) {
+                links = JSON.parse(savedLinks);
+                updateLinksList();
+                alert('Enlaces cargados correctamente.');
+            } else {
+                alert('No hay enlaces guardados.');
+            }
+        }
+
+        function clearLinks() {
+            links = [];
+            updateLinksList();
+            localStorage.removeItem('savedLinks');
+            alert('Enlaces eliminados correctamente.');
+        }
+
+        // Cargar enlaces al iniciar la aplicación
+        window.onload = loadLinks;
     </script>
 </body></html>
