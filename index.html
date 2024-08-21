@@ -1,250 +1,174 @@
-<html><head><base href="https://www.ejemplo.com/gestor-enlaces-moderno">
+<html><head><base href="https://www.ejemplo.com/gestor-enlaces-web-y-archivos-html">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestor de Enlaces Moderno</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<title>Gestor de Enlaces Web y Archivos HTML</title>
 <style>
-    :root {
-        --primary-color: #3498db;
-        --secondary-color: #2ecc71;
-        --background-color: #f5f7fa;
-        --text-color: #34495e;
-        --card-background: #ffffff;
-        --shadow-color: rgba(0, 0, 0, 0.1);
-    }
-
     body {
-        font-family: 'Roboto', sans-serif;
+        font-family: Arial, sans-serif;
         line-height: 1.6;
         margin: 0;
-        padding: 0;
-        background-color: var(--background-color);
-        color: var(--text-color);
+        padding: 20px;
+        background-color: #f4f4f4;
     }
-
     .container {
-        max-width: 1000px;
+        max-width: 800px;
         margin: 0 auto;
-        padding: 2rem;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
     h1, h2 {
-        color: var(--primary-color);
-        margin-bottom: 1.5rem;
+        color: #333;
     }
-
-    .input-group {
-        display: flex;
-        margin-bottom: 1rem;
-        gap: 1rem;
+    input[type="text"], input[type="url"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
     }
-
-    input {
-        flex-grow: 1;
-        padding: 0.75rem;
-        font-size: 1rem;
-        border: none;
-        border-radius: 5px;
-        background-color: var(--card-background);
-        box-shadow: 0 2px 5px var(--shadow-color);
-    }
-
     button {
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        border: none;
-        border-radius: 5px;
-        background-color: var(--secondary-color);
+        padding: 10px 15px;
+        background-color: #4CAF50;
         color: white;
+        border: none;
+        border-radius: 4px;
         cursor: pointer;
-        transition: background-color 0.3s, transform 0.1s;
+        font-size: 16px;
+        margin-right: 10px;
     }
-
     button:hover {
-        background-color: #27ae60;
-        transform: translateY(-2px);
+        background-color: #45a049;
     }
-
-    .enlaces-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 1.5rem;
-        margin-top: 2rem;
+    #linksList, #htmlFilesList {
+        margin-top: 20px;
     }
-
-    .enlace-card {
-        background-color: var(--card-background);
-        border-radius: 10px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 6px var(--shadow-color);
-        transition: transform 0.3s, box-shadow 0.3s;
+    .link-item, .file-item {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
     }
-
-    .enlace-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px var(--shadow-color);
-    }
-
-    .enlace-card a {
-        color: var(--primary-color);
+    .link-item a, .file-item a {
+        color: #1a0dab;
         text-decoration: none;
-        font-weight: bold;
-        font-size: 1.1rem;
-        display: block;
-        margin-bottom: 0.5rem;
     }
-
-    .enlace-card p {
-        margin: 0;
-        color: var(--text-color);
-        font-size: 0.9rem;
+    .link-item a:hover, .file-item a:hover {
+        text-decoration: underline;
     }
-
-    .eliminar-btn {
-        background-color: #e74c3c;
-        color: white;
-        border: none;
-        padding: 0.5rem;
-        cursor: pointer;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .remove-btn {
+        background-color: #f44336;
         float: right;
-        transition: background-color 0.3s;
     }
-
-    .eliminar-btn:hover {
-        background-color: #c0392b;
-    }
-
-    @media (max-width: 768px) {
-        .input-group {
-            flex-direction: column;
-        }
-        
-        .enlaces-container {
-            grid-template-columns: 1fr;
-        }
+    .remove-btn:hover {
+        background-color: #d32f2f;
     }
 </style>
 </head>
 <body>
     <div class="container">
-        <h1>Gestor de Enlaces Moderno</h1>
+        <h1>Gestor de Enlaces Web y Archivos HTML</h1>
         
-        <h2>Enlaces Web</h2>
-        <div class="input-group">
-            <input type="text" id="enlaceInput" placeholder="Ingrese un enlace web">
-            <input type="text" id="descripcionInput" placeholder="Descripción del enlace">
-            <button onclick="agregarEnlace()">Agregar Enlace</button>
-        </div>
-        <div id="enlacesList" class="enlaces-container"></div>
+        <h2>Agregar Enlace Web</h2>
+        <input type="url" id="webLink" placeholder="https://ejemplo.com">
+        <input type="text" id="linkDescription" placeholder="Descripción del enlace">
+        <button onclick="addWebLink()">Agregar Enlace Web</button>
         
-        <h2>Enlaces Locales</h2>
-        <div class="input-group">
-            <input type="text" id="localLinkInput" placeholder="Ingrese un enlace local (ej: /pagina.html)">
-            <input type="text" id="localDescripcionInput" placeholder="Descripción del enlace local">
-            <button onclick="agregarEnlaceLocal()">Agregar Enlace Local</button>
-        </div>
-        <div id="localLinksList" class="enlaces-container"></div>
+        <h2>Agregar Archivo HTML Local</h2>
+        <input type="file" id="htmlFile" accept=".html">
+        <button onclick="addHtmlFile()">Agregar Archivo HTML</button>
+        
+        <div id="linksList"></div>
+        <div id="htmlFilesList"></div>
     </div>
 
     <script>
-        let enlaces = [];
-        let localLinks = [];
+        let links = [];
+        let htmlFiles = [];
 
-        window.onload = function() {
-            cargarEnlacesGuardados();
-            actualizarListaEnlaces();
-            actualizarListaEnlacesLocales();
-        };
-
-        function cargarEnlacesGuardados() {
-            const enlacesGuardados = localStorage.getItem('enlaces');
-            const localLinksGuardados = localStorage.getItem('localLinks');
-            
-            if (enlacesGuardados) {
-                enlaces = JSON.parse(enlacesGuardados);
-            }
-            
-            if (localLinksGuardados) {
-                localLinks = JSON.parse(localLinksGuardados);
+        function addWebLink() {
+            const url = document.getElementById('webLink').value;
+            const description = document.getElementById('linkDescription').value;
+            if (url && isValidURL(url)) {
+                links.push({ url, description });
+                updateLinksList();
+                document.getElementById('webLink').value = '';
+                document.getElementById('linkDescription').value = '';
+            } else {
+                alert('Por favor, ingrese una URL válida.');
             }
         }
 
-        function guardarEnlaces() {
-            localStorage.setItem('enlaces', JSON.stringify(enlaces));
-            localStorage.setItem('localLinks', JSON.stringify(localLinks));
-        }
-
-        function agregarEnlace() {
-            const enlace = document.getElementById('enlaceInput').value;
-            const descripcion = document.getElementById('descripcionInput').value;
-            if (enlace && descripcion) {
-                enlaces.push({ url: enlace, descripcion: descripcion });
-                actualizarListaEnlaces();
-                guardarEnlaces();
-                document.getElementById('enlaceInput').value = '';
-                document.getElementById('descripcionInput').value = '';
+        function addHtmlFile() {
+            const fileInput = document.getElementById('htmlFile');
+            const file = fileInput.files[0];
+            if (file && file.name.endsWith('.html')) {
+                htmlFiles.push(file);
+                updateHtmlFilesList();
+                fileInput.value = '';
+            } else {
+                alert('Por favor, seleccione un archivo HTML válido.');
             }
         }
 
-        function agregarEnlaceLocal() {
-            const enlaceLocal = document.getElementById('localLinkInput').value;
-            const descripcionLocal = document.getElementById('localDescripcionInput').value;
-            if (enlaceLocal && descripcionLocal) {
-                localLinks.push({ url: enlaceLocal, descripcion: descripcionLocal });
-                actualizarListaEnlacesLocales();
-                guardarEnlaces();
-                document.getElementById('localLinkInput').value = '';
-                document.getElementById('localDescripcionInput').value = '';
-            }
-        }
-
-        function eliminarEnlace(index) {
-            enlaces.splice(index, 1);
-            actualizarListaEnlaces();
-            guardarEnlaces();
-        }
-
-        function eliminarEnlaceLocal(index) {
-            localLinks.splice(index, 1);
-            actualizarListaEnlacesLocales();
-            guardarEnlaces();
-        }
-
-        function actualizarListaEnlaces() {
-            const listaEnlaces = document.getElementById('enlacesList');
-            listaEnlaces.innerHTML = '';
-            enlaces.forEach((enlace, index) => {
-                const enlaceElement = document.createElement('div');
-                enlaceElement.className = 'enlace-card';
-                enlaceElement.innerHTML = `
-                    <button class="eliminar-btn" onclick="eliminarEnlace(${index})"><i class="fas fa-trash"></i></button>
-                    <a href="${enlace.url}" target="_blank">${enlace.descripcion}</a>
-                    <p>${enlace.url}</p>
+        function updateLinksList() {
+            const linksList = document.getElementById('linksList');
+            linksList.innerHTML = '<h2>Enlaces Web</h2>';
+            links.forEach((link, index) => {
+                const linkItem = document.createElement('div');
+                linkItem.className = 'link-item';
+                linkItem.innerHTML = `
+                    <a href="${link.url}" target="_blank">${link.description || link.url}</a>
+                    <button class="remove-btn" onclick="removeLink(${index})">Eliminar</button>
                 `;
-                listaEnlaces.appendChild(enlaceElement);
+                linksList.appendChild(linkItem);
             });
         }
 
-        function actualizarListaEnlacesLocales() {
-            const listaEnlacesLocales = document.getElementById('localLinksList');
-            listaEnlacesLocales.innerHTML = '';
-            localLinks.forEach((enlace, index) => {
-                const enlaceElement = document.createElement('div');
-                enlaceElement.className = 'enlace-card';
-                enlaceElement.innerHTML = `
-                    <button class="eliminar-btn" onclick="eliminarEnlaceLocal(${index})"><i class="fas fa-trash"></i></button>
-                    <a href="${enlace.url}">${enlace.descripcion}</a>
-                    <p>${enlace.url}</p>
+        function updateHtmlFilesList() {
+            const filesList = document.getElementById('htmlFilesList');
+            filesList.innerHTML = '<h2>Archivos HTML Locales</h2>';
+            htmlFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <a href="#" onclick="openHtmlFile(${index})">${file.name}</a>
+                    <button class="remove-btn" onclick="removeHtmlFile(${index})">Eliminar</button>
                 `;
-                listaEnlacesLocales.appendChild(enlaceElement);
+                filesList.appendChild(fileItem);
             });
+        }
+
+        function removeLink(index) {
+            links.splice(index, 1);
+            updateLinksList();
+        }
+
+        function removeHtmlFile(index) {
+            htmlFiles.splice(index, 1);
+            updateHtmlFilesList();
+        }
+
+        function openHtmlFile(index) {
+            const file = htmlFiles[index];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const win = window.open('', '_blank');
+                win.document.write(e.target.result);
+                win.document.close();
+            };
+            reader.readAsText(file);
+        }
+
+        function isValidURL(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
         }
     </script>
 </body></html>
